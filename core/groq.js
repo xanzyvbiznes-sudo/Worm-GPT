@@ -11,22 +11,30 @@ async function askGroq(messages, apiKey) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "llama-3.1-8b-instant",
+      model: "llama-3.3-70b-versatile",
       messages,
       temperature: 0.5
     })
   });
 
   const data = await res.json().catch(() => null);
+
   if (!res.ok) {
     const detail = data && data.error && data.error.message;
     throw new Error(detail || `Groq API error (${res.status})`);
   }
 
-  const content = data && data.choices && data.choices[0] && data.choices[0].message
-    ? data.choices[0].message.content
-    : null;
-  if (!content) throw new Error("Groq API returned no content");
+  const content =
+    data &&
+    data.choices &&
+    data.choices[0] &&
+    data.choices[0].message
+      ? data.choices[0].message.content
+      : null;
+
+  if (!content) {
+    throw new Error("Groq API returned no content");
+  }
 
   return content;
 }
@@ -40,8 +48,10 @@ async function testGroqKey(apiKey) {
   });
 
   const data = await res.json().catch(() => null);
+
   if (!res.ok) {
     const detail = data && data.error && data.error.message;
+
     return {
       ok: false,
       status: res.status,
@@ -49,7 +59,13 @@ async function testGroqKey(apiKey) {
     };
   }
 
-  return { ok: true, status: res.status };
+  return {
+    ok: true,
+    status: res.status
+  };
 }
 
-module.exports = { askGroq, testGroqKey };
+module.exports = {
+  askGroq,
+  testGroqKey
+};
