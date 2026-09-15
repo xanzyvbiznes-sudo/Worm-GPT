@@ -11,9 +11,10 @@ async function askGroq(messages, apiKey) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
-      messages,
-      temperature: 0.5
+    model: "openai/gpt-oss-20b",
+    messages,
+    temperature: 0.5
+  })
     })
   });
 
